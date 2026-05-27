@@ -1,0 +1,32 @@
+Spring Boot : it is a java fraemwork used to build standalone ,production
+ ready backend application quickly with minimal configuration.
+
+ spring boot=Java+Ready made backend setup+less confuiguration
+ why do we use it:
+ To build REST APIs
+ to connect to database
+ create backend for apps/websites
+
+THE THREE main Components of Spring Boot are:
+1.Controller:handles incoming HTTP requests and returns response.
+2.Service: service contains business logic(actual work of application).
+3.Repository: Repository interacts with the data base (CRUD operations).
+
+service-repository-database
+
+Full Flow:
+Client (Browser/Postman)
+        ↓
+Controller
+        ↓
+Service
+        ↓
+Repository
+        ↓
+Database
+
+
+Spring boot contains a Container  called ioc:
+IOC works to manage objects and create and also maintain the lifecycle of the objects
+the objects is created and get called here in springboot
+It also handles the dependency injection in spring
