@@ -2,6 +2,7 @@ services:
   - type: web
     name: employee-management-api
     env: java
-    plan: free
+    rootDir: demo
     buildCommand: ./mvnw clean install
     startCommand: java -jar target/*.jar
+    plan: free
