@@ -26,6 +26,8 @@ public class Authcontroller {
 
             response.put("token", token);
             response.put("role", "ADMIN");
+            response.put("username", username);   // ✅ ADD THIS LINE
+
             return response;
         }
 
