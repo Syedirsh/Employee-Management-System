@@ -165,7 +165,7 @@ button{
 
     <div class="menu">
         <button>Dashboard</button>
-        <button onclick="getEmployees()">Employees</button>
+        <button onclick="getEmployees()">Refresh</button>
         <button onclick="toggleAdd()">Add Employee</button>
     </div>
 </div>
@@ -184,7 +184,6 @@ button{
         </div>
     </div>
 
-    <!-- LOGIN -->
     <div class="login-box">
         <h2>Login</h2>
         <input id="username" placeholder="username">
@@ -192,7 +191,6 @@ button{
         <button class="btn btn-white" onclick="login()">Login</button>
     </div>
 
-    <!-- ADD -->
     <div class="add-box" id="addBox" style="display:none;">
         <h2>Add Employee</h2>
         <input id="empName" placeholder="employee name">
@@ -200,7 +198,6 @@ button{
         <button class="btn btn-dark" onclick="addEmployee()">Save</button>
     </div>
 
-    <!-- LIST -->
     <div class="employee-section">
         <h2>Employee List</h2>
         <div id="output" class="employee-list"></div>
@@ -215,7 +212,7 @@ const BASE_URL = "https://employee-management-system-zmmr.onrender.com";
 let token = "";
 let role = "";
 
-/* LOGIN (FIXED) */
+/* LOGIN */
 function login() {
 
     fetch(`${BASE_URL}/auth/login`, {
@@ -329,6 +326,7 @@ function deleteEmployee(id) {
     });
 }
 
+/* TOGGLE */
 function toggleAdd() {
     let box = document.getElementById("addBox");
     box.style.display = box.style.display === "none" ? "block" : "none";
