@@ -8,6 +8,11 @@ public class HomeController {
 
     @GetMapping("/")
     public String home() {
-        return "Employee Management System is running 🚀";
+        return "APP IS RUNNING SUCCESSFULLY 🚀";
+    }
+
+    @GetMapping("/health")
+    public String health() {
+        return "OK";
     }
 }
