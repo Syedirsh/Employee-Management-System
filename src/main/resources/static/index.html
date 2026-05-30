@@ -7,7 +7,6 @@
 <title>Employee Admin Dashboard</title>
 
 <style>
-
 *{
     margin:0;
     padding:0;
@@ -21,8 +20,6 @@ body{
     display:flex;
     min-height:100vh;
 }
-
-/* SIDEBAR */
 
 .sidebar{
     width:240px;
@@ -50,22 +47,16 @@ body{
     padding:14px;
     border-radius:10px;
     cursor:pointer;
-    text-align:left;
-    transition:0.2s;
 }
 
 .menu button:hover{
     background:#2b2b2b;
 }
 
-/* MAIN AREA */
-
 .main{
     flex:1;
     padding:25px;
 }
-
-/* TOPBAR */
 
 .topbar{
     display:flex;
@@ -74,17 +65,11 @@ body{
     margin-bottom:25px;
 }
 
-.topbar h1{
-    font-size:28px;
-}
-
 .user-box{
     background:#1c1c1c;
     padding:10px 16px;
     border-radius:10px;
 }
-
-/* STATS */
 
 .stats{
     display:grid;
@@ -100,27 +85,6 @@ body{
     border:1px solid #2a2a2a;
 }
 
-.stat-card h3{
-    color:#888;
-    margin-bottom:10px;
-}
-
-.stat-card h2{
-    font-size:30px;
-}
-
-/* LOGIN BOX */
-
-.login-box{
-    background:#171717;
-    padding:20px;
-    border-radius:16px;
-    margin-bottom:25px;
-    border:1px solid #2a2a2a;
-}
-
-/* INPUTS */
-
 input{
     width:100%;
     padding:12px;
@@ -130,8 +94,6 @@ input{
     border-radius:10px;
     color:white;
 }
-
-/* BUTTONS */
 
 button{
     cursor:pointer;
@@ -153,37 +115,14 @@ button{
 .btn-dark{
     background:#222;
     color:white;
-    border:1px solid #333;
 }
 
-.btn-dark:hover{
-    background:#2f2f2f;
-}
-
-/* ADD BOX */
-
-.add-box{
+.add-box, .login-box, .employee-section{
     background:#171717;
     padding:20px;
     border-radius:16px;
     margin-bottom:25px;
     border:1px solid #2a2a2a;
-}
-
-/* EMPLOYEE LIST */
-
-.employee-section{
-    background:#171717;
-    padding:20px;
-    border-radius:16px;
-    border:1px solid #2a2a2a;
-}
-
-.employee-header{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    margin-bottom:20px;
 }
 
 .employee-list{
@@ -192,8 +131,6 @@ button{
     gap:15px;
 }
 
-/* CARD */
-
 .card{
     background:#101010;
     padding:18px;
@@ -201,29 +138,13 @@ button{
     border:1px solid #262626;
     display:flex;
     justify-content:space-between;
-    align-items:center;
-}
-
-.card-left h3{
-    margin-bottom:6px;
-}
-
-.card-left p{
-    color:#9d9d9d;
-}
-
-/* CARD BUTTONS */
-
-.card-buttons{
-    display:flex;
-    gap:10px;
 }
 
 .delete-btn{
     background:#2b1b1b;
     color:#ff6b6b;
     border:none;
-    padding:10px 14px;
+    padding:10px;
     border-radius:8px;
 }
 
@@ -231,52 +152,15 @@ button{
     background:#1b2330;
     color:#6ea8ff;
     border:none;
-    padding:10px 14px;
+    padding:10px;
     border-radius:8px;
 }
-
-.delete-btn:hover{
-    background:#402020;
-}
-
-.update-btn:hover{
-    background:#253247;
-}
-
-/* MOBILE */
-
-@media(max-width:900px){
-
-    body{
-        flex-direction:column;
-    }
-
-    .sidebar{
-        width:100%;
-        border-right:none;
-        border-bottom:1px solid #2a2a2a;
-    }
-
-    .stats{
-        grid-template-columns:1fr;
-    }
-
-    .card{
-        flex-direction:column;
-        align-items:flex-start;
-        gap:15px;
-    }
-}
-
 </style>
 </head>
 
 <body>
 
-<!-- SIDEBAR -->
-
 <div class="sidebar">
-
     <div class="logo">Admin Panel</div>
 
     <div class="menu">
@@ -284,99 +168,48 @@ button{
         <button onclick="getEmployees()">Employees</button>
         <button onclick="toggleAdd()">Add Employee</button>
     </div>
-
 </div>
-
-<!-- MAIN -->
 
 <div class="main">
 
-    <!-- TOPBAR -->
-
     <div class="topbar">
         <h1>Employee Dashboard</h1>
-
-        <div class="user-box">
-            Admin
-        </div>
+        <div class="user-box">Admin</div>
     </div>
 
-    <!-- STATS -->
-
     <div class="stats">
-
         <div class="stat-card">
             <h3>Total Employees</h3>
             <h2 id="totalEmployees">0</h2>
         </div>
-
-        <div class="stat-card">
-            <h3>Backend</h3>
-            <h2>Spring Boot</h2>
-        </div>
-
-        <div class="stat-card">
-            <h3>Security</h3>
-            <h2>JWT</h2>
-        </div>
-
     </div>
-
-    <!-- LOGIN -->
 
     <div class="login-box">
-
         <h2>Login</h2>
-
         <input id="username" placeholder="username">
-
         <input id="password" type="password" placeholder="password">
-
-        <button class="btn btn-white" onclick="login()">
-            Login
-        </button>
-
+        <button class="btn btn-white" onclick="login()">Login</button>
     </div>
-
-    <!-- ADD EMPLOYEE -->
 
     <div class="add-box" id="addBox" style="display:none;">
-
         <h2>Add Employee</h2>
-
         <input id="empName" placeholder="employee name">
-
         <input id="empAge" placeholder="employee age">
-
-        <button class="btn btn-dark" onclick="addEmployee()">
-            Save Employee
-        </button>
-
+        <button class="btn btn-dark" onclick="addEmployee()">Save</button>
     </div>
 
-    <!-- EMPLOYEES -->
-
     <div class="employee-section">
-
         <div class="employee-header">
-
             <h2>Employee List</h2>
-
-            <button class="btn btn-dark" onclick="getEmployees()">
-                Refresh
-            </button>
-
+            <button class="btn btn-dark" onclick="getEmployees()">Refresh</button>
         </div>
 
         <div id="output" class="employee-list"></div>
-
     </div>
 
 </div>
 
 <script>
-
-let token = "";
 
 const BASE_URL = "https://employee-management-system-zmmr.onrender.com";
 
@@ -387,32 +220,29 @@ function login() {
         headers: {
             "Content-Type": "application/x-www-form-urlencoded"
         },
-        body:
-            "username=" + document.getElementById("username").value +
-            "&password=" + document.getElementById("password").value
+        body: new URLSearchParams({
+            username: document.getElementById("username").value,
+            password: document.getElementById("password").value
+        })
     })
     .then(res => res.text())
     .then(data => {
-        token = data;
-
-        if (!token || token === "false") {
+        if (data === "Invalid credentials") {
             alert("Login failed");
             return;
         }
-
         alert("Login successful");
         getEmployees();
-    })
-    .catch(err => alert("Login error: " + err));
+    });
 }
 
-/* TOGGLE ADD */
+/* TOGGLE */
 function toggleAdd() {
     let box = document.getElementById("addBox");
-    box.style.display = (box.style.display === "none") ? "block" : "none";
+    box.style.display = box.style.display === "none" ? "block" : "none";
 }
 
-/* ADD EMPLOYEE */
+/* ADD */
 function addEmployee() {
 
     const dto = {
@@ -423,8 +253,7 @@ function addEmployee() {
     fetch(`${BASE_URL}/employee`, {
         method: "POST",
         headers: {
-            "Content-Type": "application/json",
-            "Authorization": "Bearer " + token
+            "Content-Type": "application/json"
         },
         body: JSON.stringify(dto)
     })
@@ -432,19 +261,13 @@ function addEmployee() {
     .then(() => {
         alert("Employee Added");
         getEmployees();
-    })
-    .catch(err => alert("Add error: " + err));
+    });
 }
 
-/* GET EMPLOYEES */
+/* GET */
 function getEmployees() {
 
-    fetch(`${BASE_URL}/employee`, {
-        method: "GET",
-        headers: {
-            "Authorization": "Bearer " + token
-        }
-    })
+    fetch(`${BASE_URL}/employee`)
     .then(res => res.json())
     .then(data => {
 
@@ -455,20 +278,15 @@ function getEmployees() {
         data.forEach(emp => {
             html += `
             <div class="card">
-                <div class="card-left">
+                <div>
                     <h3>${emp.name}</h3>
                     <p>ID: ${emp.id}</p>
                     <p>Age: ${emp.age}</p>
                 </div>
 
-                <div class="card-buttons">
-                    <button class="delete-btn" onclick="deleteEmployee(${emp.id})">
-                        Delete
-                    </button>
-
-                    <button class="update-btn" onclick="updateEmployee(${emp.id})">
-                        Update
-                    </button>
+                <div>
+                    <button class="delete-btn" onclick="deleteEmployee(${emp.id})">Delete</button>
+                    <button class="update-btn" onclick="updateEmployee(${emp.id})">Update</button>
                 </div>
             </div>`;
         });
@@ -479,16 +297,11 @@ function getEmployees() {
 
 /* DELETE */
 function deleteEmployee(id) {
-
     fetch(`${BASE_URL}/employee/${id}`, {
-        method: "DELETE",
-        headers: {
-            "Authorization": "Bearer " + token
-        }
+        method: "DELETE"
     })
-    .then(res => res.text())
-    .then(msg => {
-        alert(msg);
+    .then(() => {
+        alert("Deleted");
         getEmployees();
     });
 }
@@ -496,22 +309,23 @@ function deleteEmployee(id) {
 /* UPDATE */
 function updateEmployee(id) {
 
-    let name = prompt("Enter new name:");
-    let age = prompt("Enter new age:");
-
-    const dto = { name, age };
+    let name = prompt("Enter name");
+    let age = prompt("Enter age");
 
     fetch(`${BASE_URL}/employee/${id}`, {
         method: "PUT",
         headers: {
-            "Content-Type": "application/json",
-            "Authorization": "Bearer " + token
+            "Content-Type": "application/json"
         },
-        body: JSON.stringify(dto)
+        body: JSON.stringify({ name, age })
     })
-    .then(res => res.json())
     .then(() => {
-        alert("Employee Updated");
+        alert("Updated");
         getEmployees();
     });
 }
+
+</script>
+
+</body>
+</html>
