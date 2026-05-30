@@ -7,9 +7,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class DemoApplication {
 
 	public static void main(String[] args) {
-		// System.out.println("Hello Wold");
-		System.out.println(mycontroller.mymethod());
 		SpringApplication.run(DemoApplication.class, args);
 	}
-
 }
