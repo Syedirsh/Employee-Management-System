@@ -4,6 +4,9 @@ import com.example.demo.jwt.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @RestController
 @RequestMapping("/auth")
 public class Authcontroller {
@@ -12,13 +15,21 @@ public class Authcontroller {
     private JwtUtil jwtUtil;
 
     @PostMapping("/login")
-    public String login(@RequestParam String username,
-                        @RequestParam String password) {
+    public Map<String, String> login(@RequestParam String username,
+                                      @RequestParam String password) {
 
-        if (username.equals("admin") && password.equals("admin123")) {
-            return jwtUtil.generateToken(username);
+        Map<String, String> response = new HashMap<>();
+
+        if ("admin".equals(username) && "admin123".equals(password)) {
+
+            String token = jwtUtil.generateToken(username);
+
+            response.put("token", token);
+            response.put("role", "ADMIN");
+            return response;
         }
 
-        return "Invalid credentials";
+        response.put("error", "Invalid credentials");
+        return response;
     }
 }

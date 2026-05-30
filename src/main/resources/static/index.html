@@ -213,8 +213,12 @@ button{
 
 const BASE_URL = "https://employee-management-system-zmmr.onrender.com";
 
+let token = "";
+let role = "";
+
 /* LOGIN */
 function login() {
+
     fetch(`${BASE_URL}/auth/login`, {
         method: "POST",
         headers: {
@@ -225,49 +229,41 @@ function login() {
             password: document.getElementById("password").value
         })
     })
-    .then(res => res.text())
+    .then(res => res.json())
     .then(data => {
-        if (data === "Invalid credentials") {
+
+        if (data.error) {
             alert("Login failed");
             return;
         }
-        alert("Login successful");
+
+        token = data.token;
+        role = data.role;
+
+        alert("Login successful as " + role);
+
+        applyRoleUI();
         getEmployees();
     });
 }
 
-/* TOGGLE */
-function toggleAdd() {
-    let box = document.getElementById("addBox");
-    box.style.display = box.style.display === "none" ? "block" : "none";
-}
-
-/* ADD */
-function addEmployee() {
-
-    const dto = {
-        name: document.getElementById("empName").value,
-        age: document.getElementById("empAge").value
-    };
-
-    fetch(`${BASE_URL}/employee`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify(dto)
-    })
-    .then(res => res.json())
-    .then(() => {
-        alert("Employee Added");
-        getEmployees();
-    });
+/* ROLE UI */
+function applyRoleUI() {
+    if (role === "ADMIN") {
+        document.getElementById("addBox").style.display = "block";
+    } else {
+        document.getElementById("addBox").style.display = "none";
+    }
 }
 
 /* GET */
 function getEmployees() {
 
-    fetch(`${BASE_URL}/employee`)
+    fetch(`${BASE_URL}/employee`, {
+        headers: {
+            "Authorization": "Bearer " + token
+        }
+    })
     .then(res => res.json())
     .then(data => {
 
@@ -295,10 +291,34 @@ function getEmployees() {
     });
 }
 
+/* ADD */
+function addEmployee() {
+
+    fetch(`${BASE_URL}/employee`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + token
+        },
+        body: JSON.stringify({
+            name: document.getElementById("empName").value,
+            age: document.getElementById("empAge").value
+        })
+    })
+    .then(() => {
+        alert("Employee Added");
+        getEmployees();
+    });
+}
+
 /* DELETE */
 function deleteEmployee(id) {
+
     fetch(`${BASE_URL}/employee/${id}`, {
-        method: "DELETE"
+        method: "DELETE",
+        headers: {
+            "Authorization": "Bearer " + token
+        }
     })
     .then(() => {
         alert("Deleted");
@@ -315,7 +335,8 @@ function updateEmployee(id) {
     fetch(`${BASE_URL}/employee/${id}`, {
         method: "PUT",
         headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + token
         },
         body: JSON.stringify({ name, age })
     })
@@ -323,6 +344,11 @@ function updateEmployee(id) {
         alert("Updated");
         getEmployees();
     });
+}
+
+function toggleAdd() {
+    let box = document.getElementById("addBox");
+    box.style.display = box.style.display === "none" ? "block" : "none";
 }
 
 </script>
