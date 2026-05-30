@@ -378,108 +378,74 @@ button{
 
 let token = "";
 
+const BASE_URL = "https://employee-management-system-zmmr.onrender.com";
+
 /* LOGIN */
-
-function login(){
-
-    fetch("http://localhost:8080/auth/login",{
-
-        method:"POST",
-
-        headers:{
-            "Content-Type":"application/x-www-form-urlencoded"
+function login() {
+    fetch(`${BASE_URL}/auth/login`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded"
         },
-
         body:
             "username=" + document.getElementById("username").value +
             "&password=" + document.getElementById("password").value
-
     })
-
     .then(res => res.text())
-
     .then(data => {
-
         token = data;
 
+        if (!token || token === "false") {
+            alert("Login failed");
+            return;
+        }
+
         alert("Login successful");
-
         getEmployees();
-
-    });
-
+    })
+    .catch(err => alert("Login error: " + err));
 }
 
 /* TOGGLE ADD */
-
-function toggleAdd(){
-
+function toggleAdd() {
     let box = document.getElementById("addBox");
-
-    if(box.style.display === "none"){
-
-        box.style.display = "block";
-
-    }
-
-    else{
-
-        box.style.display = "none";
-    }
+    box.style.display = (box.style.display === "none") ? "block" : "none";
 }
 
 /* ADD EMPLOYEE */
-
-function addEmployee(){
+function addEmployee() {
 
     const dto = {
-
         name: document.getElementById("empName").value,
-
         age: document.getElementById("empAge").value
     };
 
-    fetch("http://localhost:8080/employee",{
-
-        method:"POST",
-
-        headers:{
-            "Content-Type":"application/json",
-            "Authorization":"Bearer " + token
+    fetch(`${BASE_URL}/employee`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + token
         },
-
-        body:JSON.stringify(dto)
-
+        body: JSON.stringify(dto)
     })
-
     .then(res => res.json())
-
     .then(() => {
-
         alert("Employee Added");
-
         getEmployees();
-
-    });
-
+    })
+    .catch(err => alert("Add error: " + err));
 }
 
 /* GET EMPLOYEES */
+function getEmployees() {
 
-function getEmployees(){
-
-    fetch("http://localhost:8080/employee",{
-
-        method:"GET",
-
-        headers:{
-            "Authorization":"Bearer " + token
+    fetch(`${BASE_URL}/employee`, {
+        method: "GET",
+        headers: {
+            "Authorization": "Bearer " + token
         }
-
     })
-
     .then(res => res.json())
-
     .then(data => {
 
         document.getElementById("totalEmployees").innerText = data.length;
@@ -487,116 +453,65 @@ function getEmployees(){
         let html = "";
 
         data.forEach(emp => {
-
             html += `
-            
             <div class="card">
-
                 <div class="card-left">
-
                     <h3>${emp.name}</h3>
-
                     <p>ID: ${emp.id}</p>
-
                     <p>Age: ${emp.age}</p>
-
                 </div>
 
                 <div class="card-buttons">
-
-                    <button class="delete-btn"
-                        onclick="deleteEmployee(${emp.id})">
-
+                    <button class="delete-btn" onclick="deleteEmployee(${emp.id})">
                         Delete
-
                     </button>
 
-                    <button class="update-btn"
-                        onclick="updateEmployee(${emp.id})">
-
+                    <button class="update-btn" onclick="updateEmployee(${emp.id})">
                         Update
-
                     </button>
-
                 </div>
-
-            </div>
-            `;
+            </div>`;
         });
 
         document.getElementById("output").innerHTML = html;
-
     });
-
 }
 
 /* DELETE */
+function deleteEmployee(id) {
 
-function deleteEmployee(id){
-
-    fetch("http://localhost:8080/employee/" + id,{
-
-        method:"DELETE",
-
-        headers:{
-            "Authorization":"Bearer " + token
+    fetch(`${BASE_URL}/employee/${id}`, {
+        method: "DELETE",
+        headers: {
+            "Authorization": "Bearer " + token
         }
-
     })
-
     .then(res => res.text())
-
     .then(msg => {
-
         alert(msg);
-
         getEmployees();
-
     });
-
 }
 
 /* UPDATE */
-
-function updateEmployee(id){
+function updateEmployee(id) {
 
     let name = prompt("Enter new name:");
-
     let age = prompt("Enter new age:");
 
-    const dto = {
+    const dto = { name, age };
 
-        name:name,
-
-        age:age
-    };
-
-    fetch("http://localhost:8080/employee/" + id,{
-
-        method:"PUT",
-
-        headers:{
-            "Content-Type":"application/json",
-            "Authorization":"Bearer " + token
+    fetch(`${BASE_URL}/employee/${id}`, {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + token
         },
-
-        body:JSON.stringify(dto)
-
+        body: JSON.stringify(dto)
     })
-
     .then(res => res.json())
-
     .then(() => {
-
         alert("Employee Updated");
-
         getEmployees();
-
     });
-
 }
-
-</script>
-
-</body>
-</html>
