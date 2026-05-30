@@ -174,7 +174,7 @@ button{
 
     <div class="topbar">
         <h1>Employee Dashboard</h1>
-        <div class="user-box">Admin</div>
+        <div class="user-box" id="userBox">Guest</div>
     </div>
 
     <div class="stats">
@@ -192,7 +192,7 @@ button{
         <button class="btn btn-white" onclick="login()">Login</button>
     </div>
 
-    <!-- ADD EMPLOYEE -->
+    <!-- ADD -->
     <div class="add-box" id="addBox" style="display:none;">
         <h2>Add Employee</h2>
         <input id="empName" placeholder="employee name">
@@ -200,13 +200,9 @@ button{
         <button class="btn btn-dark" onclick="addEmployee()">Save</button>
     </div>
 
-    <!-- EMPLOYEES -->
+    <!-- LIST -->
     <div class="employee-section">
-        <div class="employee-header">
-            <h2>Employee List</h2>
-            <button class="btn btn-dark" onclick="getEmployees()">Refresh</button>
-        </div>
-
+        <h2>Employee List</h2>
         <div id="output" class="employee-list"></div>
     </div>
 
@@ -219,7 +215,7 @@ const BASE_URL = "https://employee-management-system-zmmr.onrender.com";
 let token = "";
 let role = "";
 
-/* LOGIN */
+/* LOGIN (FIXED) */
 function login() {
 
     fetch(`${BASE_URL}/auth/login`, {
@@ -246,31 +242,27 @@ function login() {
         localStorage.setItem("token", token);
         localStorage.setItem("role", role);
 
+        document.getElementById("userBox").innerText = role;
+
         applyRoleUI();
-
-        alert("Login successful as " + role);
-
         getEmployees();
     });
 }
 
-/* ROLE BASED UI */
+/* ROLE UI */
 function applyRoleUI() {
-    let savedRole = localStorage.getItem("role");
-
-    if (savedRole === "ADMIN") {
-        document.getElementById("addBox").style.display = "block";
-    } else {
-        document.getElementById("addBox").style.display = "none";
-    }
+    document.getElementById("addBox").style.display =
+        role === "ADMIN" ? "block" : "none";
 }
 
-/* GET EMPLOYEES */
+/* GET */
 function getEmployees() {
+
+    token = localStorage.getItem("token");
 
     fetch(`${BASE_URL}/employee`, {
         headers: {
-            "Authorization": "Bearer " + localStorage.getItem("token")
+            "Authorization": "Bearer " + token
         }
     })
     .then(res => res.json())
@@ -291,7 +283,6 @@ function getEmployees() {
 
                 <div>
                     <button class="delete-btn" onclick="deleteEmployee(${emp.id})">Delete</button>
-                    <button class="update-btn" onclick="updateEmployee(${emp.id})">Update</button>
                 </div>
             </div>`;
         });
@@ -300,14 +291,16 @@ function getEmployees() {
     });
 }
 
-/* ADD EMPLOYEE */
+/* ADD */
 function addEmployee() {
+
+    token = localStorage.getItem("token");
 
     fetch(`${BASE_URL}/employee`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
-            "Authorization": "Bearer " + localStorage.getItem("token")
+            "Authorization": "Bearer " + token
         },
         body: JSON.stringify({
             name: document.getElementById("empName").value,
@@ -323,39 +316,19 @@ function addEmployee() {
 /* DELETE */
 function deleteEmployee(id) {
 
+    token = localStorage.getItem("token");
+
     fetch(`${BASE_URL}/employee/${id}`, {
         method: "DELETE",
         headers: {
-            "Authorization": "Bearer " + localStorage.getItem("token")
+            "Authorization": "Bearer " + token
         }
     })
     .then(() => {
-        alert("Deleted");
         getEmployees();
     });
 }
 
-/* UPDATE */
-function updateEmployee(id) {
-
-    let name = prompt("Enter name");
-    let age = prompt("Enter age");
-
-    fetch(`${BASE_URL}/employee/${id}`, {
-        method: "PUT",
-        headers: {
-            "Content-Type": "application/json",
-            "Authorization": "Bearer " + localStorage.getItem("token")
-        },
-        body: JSON.stringify({ name, age })
-    })
-    .then(() => {
-        alert("Updated");
-        getEmployees();
-    });
-}
-
-/* TOGGLE */
 function toggleAdd() {
     let box = document.getElementById("addBox");
     box.style.display = box.style.display === "none" ? "block" : "none";

@@ -26,18 +26,22 @@ public class JwtFilter extends OncePerRequestFilter {
 
         String path = request.getRequestURI();
 
-        // allow auth endpoints
-        if (path.startsWith("/auth")) {
+        if (path.startsWith("/auth")
+                || path.equals("/")
+                || path.contains("index.html")
+                || path.startsWith("/static")
+                || path.startsWith("/css")
+                || path.startsWith("/js")) {
+
             filterChain.doFilter(request, response);
             return;
         }
 
         String authHeader = request.getHeader("Authorization");
 
-        // IMPORTANT FIX: don't blindly block everything
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.getWriter().write("Missing or invalid token");
+            response.getWriter().write("Missing token");
             return;
         }
 
@@ -49,7 +53,6 @@ public class JwtFilter extends OncePerRequestFilter {
                 response.getWriter().write("Invalid token");
                 return;
             }
-
         } catch (Exception e) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.getWriter().write("Token error");
