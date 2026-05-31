@@ -147,10 +147,57 @@ button{
     padding:10px;
     border-radius:8px;
 }
+
+/* MODAL */
+#modal{
+    display:none;
+    position:fixed;
+    top:0;
+    left:0;
+    right:0;
+    bottom:0;
+    background:rgba(0,0,0,0.7);
+    justify-content:center;
+    align-items:center;
+}
+
+#modal div{
+    background:#171717;
+    padding:20px;
+    border-radius:12px;
+    width:300px;
+}
+
+/* LOADER */
+#loader{
+    display:none;
+    position:fixed;
+    top:0;left:0;right:0;bottom:0;
+    background:rgba(0,0,0,0.6);
+    color:white;
+    justify-content:center;
+    align-items:center;
+    font-size:20px;
+    z-index:9999;
+}
 </style>
 </head>
 
 <body>
+
+<!-- LOADER -->
+<div id="loader">Loading...</div>
+
+<!-- MODAL -->
+<div id="modal">
+    <div>
+        <h3>Update Employee</h3>
+        <input id="editName" placeholder="name">
+        <input id="editAge" placeholder="age">
+        <button class="btn btn-white" onclick="saveUpdate()">Save</button>
+        <button class="btn btn-dark" onclick="closeModal()">Cancel</button>
+    </div>
+</div>
 
 <div class="sidebar">
     <div class="logo">Admin Panel</div>
@@ -159,6 +206,7 @@ button{
         <button onclick="goDashboard()">Dashboard</button>
         <button onclick="getEmployees()">Refresh</button>
         <button onclick="toggleAdd()">Add Employee</button>
+        <button onclick="logout()">Logout</button>
     </div>
 </div>
 
@@ -205,11 +253,23 @@ button{
 const BASE_URL = "https://employee-management-system-zmmr.onrender.com";
 
 let token = localStorage.getItem("token") || "";
+let editId = null;
+
+/* LOADER */
+function showLoader(){ document.getElementById("loader").style.display="flex"; }
+function hideLoader(){ document.getElementById("loader").style.display="none"; }
+
+/* UI STATE */
+function updateUIState(){
+    const loggedIn = !!token;
+    document.querySelectorAll(".btn").forEach(btn=>{
+        btn.disabled = !loggedIn;
+        btn.style.opacity = loggedIn ? "1" : "0.5";
+    });
+}
 
 /* DASHBOARD */
-function goDashboard() {
-    getEmployees();
-}
+function goDashboard(){ getEmployees(); }
 
 /* LOGIN */
 function login() {
@@ -235,22 +295,31 @@ function login() {
         token = data.token;
         localStorage.setItem("token", token);
 
-        document.getElementById("userBox").innerText = "ADMIN";
+        document.getElementById("userBox").innerText = "Logged in as ADMIN";
 
-        alert("Login successful");
-
+        updateUIState();
         getEmployees();
-    })
-    .catch(err => {
-        console.error(err);
-        alert("Login error");
     });
+}
+
+/* LOGOUT */
+function logout(){
+    token = "";
+    localStorage.removeItem("token");
+
+    document.getElementById("userBox").innerText = "Guest";
+    document.getElementById("output").innerHTML = "";
+
+    updateUIState();
+    alert("Logged out");
 }
 
 /* GET */
 function getEmployees() {
 
     if (!token) return;
+
+    showLoader();
 
     fetch(`${BASE_URL}/employee`, {
         headers: {
@@ -282,10 +351,7 @@ function getEmployees() {
 
         document.getElementById("output").innerHTML = html;
     })
-    .catch(err => {
-        console.error(err);
-        alert("Error loading employees");
-    });
+    .finally(()=>hideLoader());
 }
 
 /* ADD */
@@ -302,15 +368,7 @@ function addEmployee() {
             age: document.getElementById("empAge").value
         })
     })
-    .then(res => res.json())
-    .then(() => {
-        alert("Employee Added");
-        getEmployees();
-    })
-    .catch(err => {
-        console.error(err);
-        alert("Add failed");
-    });
+    .then(() => getEmployees());
 }
 
 /* DELETE */
@@ -322,53 +380,54 @@ function deleteEmployee(id) {
             "Authorization": `Bearer ${token}`
         }
     })
-    .then(() => getEmployees())
-    .catch(err => {
-        console.error(err);
-        alert("Delete failed");
-    });
+    .then(()=>getEmployees());
 }
 
-/* UPDATE */
-function editEmployee(id, name, age) {
+/* UPDATE MODAL */
+function editEmployee(id,name,age){
+    editId=id;
+    document.getElementById("editName").value=name;
+    document.getElementById("editAge").value=age;
+    document.getElementById("modal").style.display="flex";
+}
 
-    const newName = prompt("Enter new name", name);
-    const newAge = prompt("Enter new age", age);
+function closeModal(){
+    document.getElementById("modal").style.display="none";
+}
 
-    if (!newName || !newAge) return;
+function saveUpdate(){
 
-    fetch(`${BASE_URL}/employee/${id}`, {
-        method: "PUT",
-        headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`
+    showLoader();
+
+    fetch(`${BASE_URL}/employee/${editId}`,{
+        method:"PUT",
+        headers:{
+            "Content-Type":"application/json",
+            "Authorization":`Bearer ${token}`
         },
-        body: JSON.stringify({
-            name: newName,
-            age: newAge
+        body:JSON.stringify({
+            name:document.getElementById("editName").value,
+            age:document.getElementById("editAge").value
         })
     })
-    .then(res => {
-        if (!res.ok) throw new Error();
-        return res.json();
-    })
-    .then(() => {
-        alert("Updated successfully");
+    .then(()=> {
+        closeModal();
         getEmployees();
     })
-    .catch(() => alert("Update failed"));
+    .finally(()=>hideLoader());
 }
 
 /* TOGGLE */
-function toggleAdd() {
-    let box = document.getElementById("addBox");
-    box.style.display = box.style.display === "none" ? "block" : "none";
+function toggleAdd(){
+    let box=document.getElementById("addBox");
+    box.style.display = box.style.display==="none"?"block":"none";
 }
 
-/* AUTO LOAD */
-window.onload = () => {
-    if (token) {
-        document.getElementById("userBox").innerText = "ADMIN";
+/* INIT */
+window.onload=()=>{
+    if(token){
+        document.getElementById("userBox").innerText="Logged in as ADMIN";
+        updateUIState();
         getEmployees();
     }
 };
